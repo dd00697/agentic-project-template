@@ -64,6 +64,7 @@ hooks, and CI all run these same commands.
 | `.claude/settings.json`, `.codex/` | Agent permissions, hooks, MCP servers |
 | `scripts/agent_hook.py` | Shared Claude/Codex hook (guard, format, stop, notify) |
 | `docs/adr/` | Architecture decision records |
+| `docs/agentic-workflow.md` | What each skill, MCP server and hook does, and why (for humans) |
 
 <!-- ==== PYTHON (delete this section if unused) ==== -->
 ## Python
