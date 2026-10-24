@@ -1,0 +1,4 @@
+# Normalise line endings to LF everywhere (Windows core.autocrlf would otherwise convert them).
+* text=auto eol=lf
+*.cmd text eol=crlf
+*.bat text eol=crlf

@@ -1,0 +1,59 @@
+# Project-scoped Codex config. Codex loads it only after you trust this project, and the
+# hooks below also need approving once in /hooks. Secrets come from your environment
+# (names in .env.example); nothing secret belongs in this file.
+# Personal settings (notify, tui.notifications) are ignored here; see README.
+
+# ---- MCP servers: on by default ----
+
+[mcp_servers.github]
+url = "https://api.githubcopilot.com/mcp/"
+bearer_token_env_var = "GITHUB_PAT"
+
+[mcp_servers.context7]
+url = "https://mcp.context7.com/mcp"
+# The key is optional (higher rate limits). With the variable unset the header is omitted.
+env_http_headers = { "CONTEXT7_API_KEY" = "CONTEXT7_API_KEY" }
+startup_timeout_sec = 30
+
+# ---- MCP servers: opt-in. Set enabled = true for projects that need them. ----
+
+# Web projects: browser automation.
+[mcp_servers.playwright]
+command = "npx"
+args = ["-y", "@playwright/mcp@0.0.83"]
+enabled = false
+
+# Design projects: authenticate with `codex mcp login figma`.
+[mcp_servers.figma]
+url = "https://mcp.figma.com/mcp"
+enabled = false
+
+# ---- Hooks: same script as Claude Code (scripts/agent_hook.py) ----
+
+[[hooks.PreToolUse]]
+matcher = "apply_patch|Edit|Write|Bash|exec_command|shell"
+
+[[hooks.PreToolUse.hooks]]
+type = "command"
+command = 'python3 "$(git rev-parse --show-toplevel)/scripts/agent_hook.py" guard'
+command_windows = 'python "$(git rev-parse --show-toplevel)/scripts/agent_hook.py" guard'
+timeout = 10
+statusMessage = "Checking for secret and lock-file edits"
+
+[[hooks.PostToolUse]]
+matcher = "apply_patch|Edit|Write"
+
+[[hooks.PostToolUse.hooks]]
+type = "command"
+command = 'python3 "$(git rev-parse --show-toplevel)/scripts/agent_hook.py" after-edit'
+command_windows = 'python "$(git rev-parse --show-toplevel)/scripts/agent_hook.py" after-edit'
+timeout = 30
+statusMessage = "Formatting edited files"
+
+[[hooks.Stop]]
+
+[[hooks.Stop.hooks]]
+type = "command"
+command = 'python3 "$(git rev-parse --show-toplevel)/scripts/agent_hook.py" stop'
+command_windows = 'python "$(git rev-parse --show-toplevel)/scripts/agent_hook.py" stop'
+timeout = 330

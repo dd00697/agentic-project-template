@@ -1,0 +1,84 @@
+# Codex command policy (experimental; loads only in trusted projects).
+# Matches the "ask" / "deny" lists in .claude/settings.json. Read-only and test commands
+# need no rule: Codex's sandbox already runs them without asking.
+# Check a command with:
+#   codex execpolicy check --pretty --rules .codex/rules/default.rules -- git push origin main
+# Rules match command prefixes only, so a trailing flag (`git push origin main --force`)
+# isn't caught here. Branch protection on GitHub is the real guard.
+
+prefix_rule(
+    pattern = ["git", "push", ["--force", "-f", "--force-with-lease"]],
+    decision = "forbidden",
+    justification = "Force-pushing rewrites shared history.",
+    match = ["git push --force origin main", "git push -f"],
+)
+
+prefix_rule(
+    pattern = ["git", "push"],
+    decision = "prompt",
+    justification = "Pushing publishes work; confirm first.",
+    match = ["git push -u origin HEAD"],
+)
+
+prefix_rule(
+    pattern = ["git", ["rm", "clean"]],
+    decision = "prompt",
+    justification = "Deletes files.",
+)
+
+prefix_rule(
+    pattern = ["git", "reset", "--hard"],
+    decision = "prompt",
+    justification = "Discards uncommitted work.",
+)
+
+prefix_rule(
+    pattern = ["git", "branch", "-D"],
+    decision = "prompt",
+    justification = "Deletes an unmerged branch.",
+)
+
+prefix_rule(
+    pattern = ["rm"],
+    decision = "prompt",
+    justification = "Deletes files.",
+    match = ["rm -rf build"],
+)
+
+prefix_rule(
+    pattern = ["gh", "pr", ["create", "merge", "comment"]],
+    decision = "prompt",
+    justification = "Writes to GitHub.",
+)
+
+prefix_rule(
+    pattern = ["gh", "issue", ["create", "comment", "edit"]],
+    decision = "prompt",
+    justification = "Writes to GitHub.",
+)
+
+prefix_rule(
+    pattern = ["npm", ["install", "i", "uninstall"]],
+    decision = "prompt",
+    justification = "Changes dependencies; confirm first.",
+    match = ["npm install left-pad"],
+    not_match = ["npm test"],
+)
+
+prefix_rule(
+    pattern = [["pnpm", "yarn"], "add"],
+    decision = "prompt",
+    justification = "Changes dependencies; confirm first.",
+)
+
+prefix_rule(
+    pattern = ["uv", ["add", "remove"]],
+    decision = "prompt",
+    justification = "Changes dependencies; confirm first.",
+)
+
+prefix_rule(
+    pattern = ["pip", "install"],
+    decision = "prompt",
+    justification = "Changes dependencies; confirm first.",
+)

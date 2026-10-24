@@ -1,0 +1,90 @@
+# pre-commit is the single source of truth for checks. Git hooks, agent hooks and CI all run it:
+#   pre-commit run --all-files                       # format, lint, typecheck, secret scan
+#   pre-commit run --all-files --hook-stage manual   # tests (also run automatically on git push)
+# Setup once per clone: pre-commit install          Update pinned versions: pre-commit autoupdate
+
+minimum_pre_commit_version: "4.0.0"
+default_install_hook_types: [pre-commit, pre-push]
+default_stages: [pre-commit] # hooks without `stages` run on commit only; tests opt into push/manual
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: check-yaml
+      - id: check-json
+        exclude: (^|/)(tsconfig[^/]*|jsconfig[^/]*|\.vscode/[^/]*)\.json$ # JSONC
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--maxkb=500]
+      - id: check-case-conflict
+      - id: detect-private-key
+      # Enforces branch-per-ticket. For quick personal projects, delete this hook and
+      # drop it from SKIP= in .github/workflows/ci.yml.
+      - id: no-commit-to-branch
+        args: [--branch, main]
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks
+
+  - repo: local
+    hooks:
+      - id: sync-skills
+        name: sync .agents/skills -> .claude/skills
+        language: python
+        entry: python scripts/sync_skills.py
+        pass_filenames: false
+        files: ^(\.agents/skills/|\.claude/skills/|scripts/sync_skills\.py$)
+
+  # ==== PYTHON (uncomment to enable; needs uv and a pyproject.toml with dev deps mypy + pytest) ====
+  # - repo: https://github.com/astral-sh/ruff-pre-commit
+  #   rev: v0.17.2
+  #   hooks:
+  #     - id: ruff-check
+  #       args: [--fix]
+  #     - id: ruff-format
+  # - repo: local
+  #   hooks:
+  #     - id: mypy
+  #       name: mypy (typecheck)
+  #       language: system
+  #       entry: uv run --frozen mypy
+  #       types_or: [python, pyi]
+  #       pass_filenames: false
+  #     - id: pytest
+  #       name: pytest
+  #       language: system
+  #       entry: uv run --frozen pytest -q
+  #       types: [python]
+  #       pass_filenames: false
+  #       stages: [pre-push, manual]
+
+  # ==== TYPESCRIPT (uncomment to enable; needs: npm i -D @biomejs/biome typescript vitest) ====
+  # - repo: local
+  #   hooks:
+  #     - id: biome
+  #       name: biome (format + lint)
+  #       language: system
+  #       entry: npx --no-install biome check --write --no-errors-on-unmatched --files-ignore-unknown=true
+  #       types_or: [javascript, jsx, ts, tsx, json, css]
+  #     - id: tsc
+  #       name: tsc (typecheck)
+  #       language: system
+  #       entry: npx --no-install tsc --noEmit
+  #       types_or: [ts, tsx]
+  #       pass_filenames: false
+  #     - id: vitest
+  #       name: vitest
+  #       language: system
+  #       entry: npx --no-install vitest run
+  #       types_or: [javascript, jsx, ts, tsx]
+  #       pass_filenames: false
+  #       stages: [pre-push, manual]
