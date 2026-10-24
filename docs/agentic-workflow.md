@@ -2,7 +2,8 @@
 
 This repo is set up so AI agents (Claude Code and Codex) work the same way a careful engineer
 would: start from an issue, plan, branch, test, review, and never push to `main` directly.
-This page explains each piece. Setup steps are in the [README](../README.md).
+This page explains each piece. Setup steps are in the [README](../README.md), and how to work
+day to day (tickets, reviews, habits) is in [CONTRIBUTING.md](../CONTRIBUTING.md).
 
 ## The flow
 

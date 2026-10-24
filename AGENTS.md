@@ -33,6 +33,9 @@ hooks, and CI all run these same commands.
 
 - Change only what the ticket needs. Note unrelated problems in your reply instead of fixing them.
 - Follow the existing patterns, naming, and structure of the surrounding code.
+- Keep PRs small (about 400 changed lines or fewer, one ticket each). Propose a split if it's bigger.
+- Commit messages use Conventional Commits (`feat: add csv export`). One logical change per commit.
+- Show the user your plan and wait for approval before editing code on non-trivial tasks.
 - Every behaviour change comes with a test that would fail without it. Bug fixes start with a
   failing regression test.
 - Don't weaken, skip, or delete tests or checks to get green. Never use `--no-verify`.
@@ -65,6 +68,7 @@ hooks, and CI all run these same commands.
 | `scripts/agent_hook.py` | Shared Claude/Codex hook (guard, format, stop, notify) |
 | `docs/adr/` | Architecture decision records |
 | `docs/agentic-workflow.md` | What each skill, MCP server and hook does, and why (for humans) |
+| `CONTRIBUTING.md` | How people work here: tickets, planning, PRs, review (for humans) |
 
 <!-- ==== PYTHON (delete this section if unused) ==== -->
 ## Python
