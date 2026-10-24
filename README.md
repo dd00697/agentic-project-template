@@ -11,7 +11,9 @@ A small starting point for projects built with AI coding agents. It works the sa
 - **Language-agnostic by default**, with ready-made Python and TypeScript sections you can switch on.
 
 For what each skill, MCP server and hook does, and why it helps, see
-[docs/agentic-workflow.md](docs/agentic-workflow.md). Keep that file when you replace this README.
+[docs/agentic-workflow.md](docs/agentic-workflow.md). For how to work here (tickets, planning, PRs and
+reviews without shipping AI slop), see [CONTRIBUTING.md](CONTRIBUTING.md). Keep both files when you
+replace this README.
 
 > Replace this README with your project's own once you've created a repo from the template.
 > Keep the "Setup" section.

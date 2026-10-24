@@ -22,5 +22,6 @@ Closes #
 
 - [ ] Every acceptance criterion in the issue is met, with tests
 - [ ] `pre-commit run --all-files` and the test stage pass locally
+- [ ] I've read the whole diff and can explain every change
 - [ ] No debug code, secrets, or unrelated changes in the diff
 - [ ] Docs / ADR updated where behaviour or architecture changed
